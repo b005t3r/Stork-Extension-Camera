@@ -5,7 +5,6 @@
  */
 package stork.camera {
 
-import medkit.geom.GeomUtil;
 import medkit.geom.shapes.Point2D;
 import medkit.geom.shapes.Rectangle2D;
 
@@ -34,7 +33,7 @@ public class CameraNode extends ContainerNode {
 
     /** Camera's viewport rotation around its anchor point, in radians, clockwise, 0 is up, always between (-PI, PI). @default 0 */
     public function get rotation():Number { return _rotation; }
-    public function set rotation(value:Number):void { _rotation = GeomUtil.normalizeLocalAngle(value); }
+    public function set rotation(value:Number):void { _rotation = value; }
 
     public function get space():CameraSpaceNode { return parentNode as CameraSpaceNode; }
 
