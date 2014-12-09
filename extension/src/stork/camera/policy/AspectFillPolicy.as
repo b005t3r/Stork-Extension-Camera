@@ -1,7 +1,7 @@
 /**
  * User: booster
- * Date: 06/12/14
- * Time: 17:38
+ * Date: 09/12/14
+ * Time: 18:06
  */
 package stork.camera.policy {
 import flash.geom.Matrix;
@@ -11,11 +11,11 @@ import stork.camera.CameraProjectionNode;
 
 import stork.camera.CameraSpaceNode;
 
-/** Fits camera's viewport not changing it's aspect ratio into projection's viewport. */
-public class AspectFitPolicy implements IProjectionPolicy {
+/** Fits projection's viewport with camera's viewport not changing it's aspect ratio. */
+public class AspectFillPolicy implements IProjectionPolicy {
     private var _alignment:Number = 0.5;
 
-    /** How the remaining space is used; when 0 camera's viewport is at the left/top edge, when 1 it's at the right/bottom one. @default 0.5 */
+    /** How the camera's viewort is aligned; when 0 it's at the left/top edge, when 1 it's at the right/bottom one. @default 0.5 */
     public function get alignment():Number { return _alignment; }
     public function set alignment(value:Number):void { _alignment = value; }
 
@@ -34,10 +34,10 @@ public class AspectFitPolicy implements IProjectionPolicy {
         var cvr:Number = cvw / cvh;
         var pvr:Number = pvw / pvh;
 
-        var scale:Number = cvr > pvr
-            ? cvw / pvw // camera's viewport is proportionally wider than projection's viewport
-            : cvh / pvh // camera's viewport is proportionally taller than projection's viewport
-        ;
+        var scale:Number = cvr < pvr
+                ? cvw / pvw // camera's viewport is proportionally taller than projection's viewport
+                : cvh / pvh // camera's viewport is proportionally wider than projection's viewport
+            ;
 
         var scvw:Number = cvw * csx;
         var scvh:Number = cvh * csy;
