@@ -23,12 +23,23 @@ public class CameraSprite extends Sprite {
 
         _anchorQuad = new Quad(0.5, 0.5, Color.WHITE);
         _anchorQuad.alignPivot();
-        _anchorQuad.x = anchorX;
-        _anchorQuad.y = anchorY;
         addChild(_anchorQuad);
+
+        pivotX = anchorX;
+        pivotY = anchorY;
 
         addEventListener(TouchEvent.TOUCH, onTouch);
         useHandCursor = true;
+    }
+
+    override public function set pivotX(value:Number):void {
+        super.pivotX = value;
+        _anchorQuad.x = value;
+    }
+
+    override public function set pivotY(value:Number):void {
+        super.pivotY = value;
+        _anchorQuad.y = value;
     }
 
     private function onTouch(event:TouchEvent):void {
