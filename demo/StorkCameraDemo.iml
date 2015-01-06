@@ -2,7 +2,7 @@
 <module type="Flex" version="4">
   <component name="FlexBuildConfigurationManager" active="StorkCameraDemo">
     <configurations>
-      <configuration name="StorkCameraDemo" target-platform="Desktop" pure-as="true" main-class="Main" output-file="Main.swf" output-folder="$MODULE_DIR$/../../StorkTest/out/production/StorkCameraDemo">
+      <configuration name="StorkCameraDemo" target-platform="Desktop" pure-as="true" main-class="StarlingDemoMain" output-file="Main.swf" output-folder="$MODULE_DIR$/out">
         <dependencies target-player="12.0">
           <entries>
             <entry module-name="MedKit" build-configuration-name="MedKit">
@@ -21,6 +21,12 @@
               <dependency linkage="Merged" />
             </entry>
             <entry module-name="Stork-Extension-Tween" build-configuration-name="Stork-Extension-Tween">
+              <dependency linkage="Merged" />
+            </entry>
+            <entry module-name="Stork-Extension-Nape" build-configuration-name="Stork-Extension-Nape">
+              <dependency linkage="Merged" />
+            </entry>
+            <entry library-id="99c16223-cc2b-4e28-8c50-e69d2b0080cd">
               <dependency linkage="Merged" />
             </entry>
           </entries>
@@ -47,6 +53,17 @@
     <orderEntry type="module" module-name="Starling" exported="" />
     <orderEntry type="module" module-name="Stork-Extension-Camera" exported="" />
     <orderEntry type="module" module-name="Stork-Extension-Tween" exported="" />
+    <orderEntry type="module" module-name="Stork-Extension-Nape" exported="" />
+    <orderEntry type="module-library" exported="">
+      <library type="flex">
+        <properties id="99c16223-cc2b-4e28-8c50-e69d2b0080cd" />
+        <CLASSES>
+          <root url="jar://$MODULE_DIR$/../../Stork-Extension-Nape/extension/lib/nape-dev.swc!/" />
+        </CLASSES>
+        <JAVADOC />
+        <SOURCES />
+      </library>
+    </orderEntry>
   </component>
 </module>
 

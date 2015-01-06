@@ -4,18 +4,18 @@ import flash.display.Sprite;
 import flash.display.Stage;
 import flash.events.Event;
 import flash.events.KeyboardEvent;
-import flash.geom.Matrix;
 import flash.ui.Keyboard;
 
 import stork.camera.CameraNode;
 import stork.camera.CameraProjectionNode;
 import stork.camera.CameraSpaceNode;
-import stork.camera.policy.AspectFillPolicy;
+import stork.camera.StarlingProjectionNode;
 import stork.camera.policy.AspectFitPolicy;
 import stork.core.SceneNode;
 import stork.event.SceneEvent;
-import stork.event.SceneStepEvent;
 import stork.event.TweenEvent;
+import stork.game.DelegateActionNode;
+import stork.game.GameLoopNode;
 import stork.starling.SimpleResizePolicy;
 import stork.starling.StarlingPlugin;
 import stork.transition.TweenTransitions;
@@ -24,14 +24,21 @@ import stork.tween.JugglerNode;
 import stork.tween.TimelineNode;
 import stork.tween.TweenNode;
 
-[SWF(width="480", height="720", backgroundColor="#666666", frameRate="60")]
-public class Main extends Sprite {
-    private var _useCamera:Boolean = false;
+[SWF(width="720", height="480", backgroundColor="#666666", frameRate="60")]
+public class StarlingDemoMain extends Sprite {
+    private static const JUGGLER_PRIORITY:int           = 10;
+    private static const PRE_VALIDATION_PRIORITY:int    = 24;
+    private static const VALIDATION_PRIORITY:int        = 25;
+    private static const POST_VALIDATION_PRIORITY:int   = 26;
+    private static const PROJECTION_PRIORITY:int        = 30;
+
     private var _cameraSprite:CameraSprite;
 
+    private var _cameraSpace:CameraSpaceNode;
     private var _camera:CameraNode;
-    private var _cameraProjection:CameraProjectionNode;
+    private var _cameraProjection:StarlingProjectionNode;
 
+    private var _gameLoop:GameLoopNode;
     private var _juggler:JugglerNode;
     private var _scaleTween:AbstractTweenNode;
     private var _transitionTween:AbstractTweenNode;
@@ -39,7 +46,7 @@ public class Main extends Sprite {
     private var _anchorTween:AbstractTweenNode;
     private var _alignmentTween:AbstractTweenNode;
 
-    public function Main() {
+    public function StarlingDemoMain() {
         addEventListener(Event.ADDED_TO_STAGE, onAddedToStage);
     }
 
@@ -48,52 +55,47 @@ public class Main extends Sprite {
 
         scene.registerPlugin(new StarlingPlugin(CameraRoot, this, new SimpleResizePolicy(), true));
 
-        _juggler = new JugglerNode();
+        _gameLoop = new GameLoopNode();
+        scene.addNode(_gameLoop);
+
+        _juggler = new JugglerNode(JUGGLER_PRIORITY);
         scene.addNode(_juggler);
+        _gameLoop.addNode(_juggler.action);
 
-        var cameraSpace:CameraSpaceNode = new CameraSpaceNode();
-        scene.addNode(cameraSpace);
+        _cameraSpace = new CameraSpaceNode(0, 600 - 10, 0, 600 - 10);
+        scene.addNode(_cameraSpace);
 
-        _camera = new CameraNode(5, 5, 30, 20);
-        //_camera.anchor.x = 0.5;
-        //_camera.anchor.y = 1;
-        cameraSpace.addNode(_camera);
-
-        //_cameraProjection = new CameraProjectionNode(new AspectFitPolicy(), stage.stageWidth, stage.stageHeight);
-        _cameraProjection = new CameraProjectionNode(new AspectFillPolicy(), stage.stageWidth, stage.stageHeight);
-        //AspectFitPolicy(_cameraProjection.policy).alignment = 1.0;
-        _camera.addNode(_cameraProjection);
-
-        stage.addEventListener(KeyboardEvent.KEY_DOWN, onKeyDown);
-        stage.addEventListener(Event.RESIZE, onResize);
+        _camera = new CameraNode(5, 5, 30, 20, VALIDATION_PRIORITY);
+        _cameraSpace.addNode(_camera);
+        _gameLoop.addNode(_camera.validationAction);
 
         scene.addEventListener(SceneEvent.SCENE_STARTED, function(e:SceneEvent):void {
-            var viewport:CameraRoot = scene.getObjectByClass(CameraRoot) as CameraRoot;
-            _cameraSprite = new CameraSprite(_camera.viewport.width, _camera.viewport.height, _camera.anchor.x * _camera.viewport.width, _camera.anchor.y * _camera.viewport.height);
-            _cameraSprite.alpha = 0.2;
-            _cameraSprite.x = _camera.viewport.x;
-            _cameraSprite.y = _camera.viewport.y;
-            _cameraSprite.pivotX = _camera.viewport.width * _camera.anchor.x;
-            _cameraSprite.pivotY = _camera.viewport.height * _camera.anchor.y;
+            stage.addEventListener(KeyboardEvent.KEY_DOWN, onKeyDown);
+            stage.addEventListener(Event.RESIZE, onResize);
 
+            var viewport:CameraRoot = scene.getObjectByClass(CameraRoot) as CameraRoot;
+            _cameraProjection = new StarlingProjectionNode(viewport, new AspectFitPolicy(), stage.stageWidth, stage.stageHeight, PROJECTION_PRIORITY);
+            _camera.addNode(_cameraProjection);
+            _gameLoop.addNode(_cameraProjection.updateAction);
+
+            _cameraSprite           = new CameraSprite(_camera.viewport.width, _camera.viewport.height, _camera.anchor.x * _camera.viewport.width, _camera.anchor.y * _camera.viewport.height);
+            _cameraSprite.alpha     = 0.2;
+            _cameraSprite.x         = _camera.viewport.x;
+            _cameraSprite.y         = _camera.viewport.y;
+            _cameraSprite.pivotX    = _camera.viewport.width * _camera.anchor.x;
+            _cameraSprite.pivotY    = _camera.viewport.height * _camera.anchor.y;
             viewport.addChild(_cameraSprite);
 
-            scene.addEventListener(SceneStepEvent.STEP, function(e:SceneStepEvent):void {
-                if(_transitionTween == null && _anchorTween == null && _rotateTween == null && _scaleTween == null) {
+            _gameLoop.addNode(new DelegateActionNode(PRE_VALIDATION_PRIORITY, "PreCameraValidationAction", function(dt:Number):void {
+                if(_transitionTween == null && _anchorTween == null && _rotateTween == null && _scaleTween == null)
                     mapCameraToSprite(_cameraSprite, _camera);
-                }
-                else {
+                else
                     mapSpriteToCamera(_cameraSprite, _camera);
-                }
+            }));
 
-                if(_useCamera) {
-                    _cameraProjection.update();
-                    viewport.transformationMatrix = _cameraProjection.transformationMatrix;
-                }
-                else {
-                    viewport.transformationMatrix = new Matrix();
-                }
-            });
+            _gameLoop.addNode(new DelegateActionNode(POST_VALIDATION_PRIORITY, "PostCameraValidationAction", function(dt:Number):void {
+                mapSpriteToCamera(_cameraSprite, _camera);
+            }));
         });
 
         scene.start();
@@ -126,7 +128,7 @@ public class Main extends Sprite {
     private function onKeyDown(event:KeyboardEvent):void {
         switch(event.keyCode) {
             case Keyboard.C:
-                _useCamera = ! _useCamera;
+                _cameraProjection.active = ! _cameraProjection.active;
                 break;
 
             case Keyboard.Q:
@@ -167,6 +169,11 @@ public class Main extends Sprite {
                     _alignmentTween.addEventListener(TweenEvent.FINISHED, function(e:TweenEvent) { _alignmentTween = null; });
                     _juggler.addNode(_alignmentTween);
                 }
+                break;
+
+            case Keyboard.A:
+                _camera.validate();
+                mapSpriteToCamera(_cameraSprite, _camera);
                 break;
         }
     }
@@ -252,8 +259,8 @@ public class Main extends Sprite {
     }
 
     private function createAlignmentTween(projection:CameraProjectionNode):AbstractTweenNode {
-        var maxTween:TweenNode = new TweenNode(projection.policy, 2, TweenTransitions.EASE_IN_OUT);
-        var minTween:TweenNode = new TweenNode(projection.policy, 2, TweenTransitions.EASE_IN_OUT);
+        var maxTween:TweenNode = new TweenNode(projection.policy, 1, TweenTransitions.EASE_IN_OUT);
+        var minTween:TweenNode = new TweenNode(projection.policy, 1, TweenTransitions.EASE_IN_OUT);
 
         var val:Number = projection.policy["alignment"];
         maxTween.animateFromTo("alignment", val, 1);
