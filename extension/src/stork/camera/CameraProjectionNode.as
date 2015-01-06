@@ -10,6 +10,7 @@ import flash.geom.Matrix;
 import stork.camera.policy.IProjectionPolicy;
 
 import stork.core.Node;
+import stork.game.camera.CameraProjectionUpdateActionNode;
 
 public class CameraProjectionNode extends Node {
     private var _policy:IProjectionPolicy;
@@ -19,12 +20,20 @@ public class CameraProjectionNode extends Node {
 
     private var _transformationMatrix:Matrix = new Matrix();
 
-    public function CameraProjectionNode(policy:IProjectionPolicy, viewportWidth:Number, viewportHeight:Number, name:String = "CameraProjection") {
+    private var _active:Boolean = true;
+
+    private var _updateActionPriority:int;
+    private var _updateAction:CameraProjectionUpdateActionNode;
+
+    public function CameraProjectionNode(policy:IProjectionPolicy, viewportWidth:Number, viewportHeight:Number, actionPriority:int = int.MAX_VALUE, name:String = "CameraProjection") {
         super(name);
 
         _policy = policy;
         _viewportWidth = viewportWidth;
         _viewportHeight = viewportHeight;
+        _updateActionPriority = actionPriority;
+
+        _updateAction = new CameraProjectionUpdateActionNode(this, name + "UpdateAction");
     }
 
     public function get policy():IProjectionPolicy { return _policy; }
@@ -37,9 +46,23 @@ public class CameraProjectionNode extends Node {
 
     public function get transformationMatrix():Matrix { return _transformationMatrix; }
 
+    public function get active():Boolean { return _active; }
+    public function set active(value:Boolean):void {
+        _active = value;
+
+        if(! _active)
+            _transformationMatrix.identity();
+    }
+
+    public function get updateActionPriority():int { return _updateActionPriority; }
+    public function get updateAction():CameraProjectionUpdateActionNode { return _updateAction; }
+
     public function get camera():CameraNode { return parentNode as CameraNode; }
 
     public function update():void {
+        if(! _active)
+            return;
+
         _policy.updateTransform(_transformationMatrix, camera.space, camera, this);
     }
 }
