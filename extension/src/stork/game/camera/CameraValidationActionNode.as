@@ -11,7 +11,7 @@ public class CameraValidationActionNode extends GameActionNode {
     private var _camera:CameraNode;
 
     public function CameraValidationActionNode(camera:CameraNode, name:String = "CameraValidationAction") {
-        if(camera != null)  super(camera.validationActionPriority, name);
+        if(camera != null)  super(camera.validateActionPriority, name);
         else                throw new ArgumentError("'camera' cannot be null");
 
         _camera = camera;

@@ -27,16 +27,16 @@ public class CameraNode extends ContainerNode {
 
     private var _transformationMatrix:Matrix    = new Matrix();
 
-    private var _validationActionPriority:int;
-    private var _validationAction:CameraValidationActionNode;
+    private var _validateActionPriority:int;
+    private var _validateAction:CameraValidationActionNode;
 
-    public function CameraNode(x:Number, y:Number, width:Number, height:Number, actionPriority:int = int.MAX_VALUE, name:String = "Camera") {
+    public function CameraNode(x:Number, y:Number, width:Number, height:Number, validateActionPriority:int = int.MAX_VALUE, name:String = "Camera") {
         super(name);
 
         _viewport.setTo(x, y, width, height);
 
-        _validationActionPriority = actionPriority;
-        _validationAction = new CameraValidationActionNode(this, name + "ValidationAction");
+        _validateActionPriority = validateActionPriority;
+        _validateAction = new CameraValidationActionNode(this, name + "ValidationAction");
     }
 
     /** Camera viewport's in parent space. */
@@ -52,8 +52,8 @@ public class CameraNode extends ContainerNode {
     public function get rotation():Number { return _rotation; }
     public function set rotation(value:Number):void { _rotation = value; }
 
-    public function get validationActionPriority():int { return _validationActionPriority; }
-    public function get validationAction():CameraValidationActionNode { return _validationAction; }
+    public function get validateActionPriority():int { return _validateActionPriority; }
+    public function get validateAction():CameraValidationActionNode { return _validateAction; }
 
     public function get space():CameraSpaceNode { return parentNode as CameraSpaceNode; }
 
