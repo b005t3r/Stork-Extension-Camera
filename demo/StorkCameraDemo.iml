@@ -8,9 +8,6 @@
             <entry module-name="MedKit" build-configuration-name="MedKit">
               <dependency linkage="Merged" />
             </entry>
-            <entry module-name="Starling" build-configuration-name="Starling">
-              <dependency linkage="Merged" />
-            </entry>
             <entry module-name="Stork-Extension-Camera" build-configuration-name="Stork-Extension-Camera">
               <dependency linkage="Merged" />
             </entry>
@@ -27,6 +24,9 @@
               <dependency linkage="Merged" />
             </entry>
             <entry library-id="99c16223-cc2b-4e28-8c50-e69d2b0080cd">
+              <dependency linkage="Merged" />
+            </entry>
+            <entry module-name="starling" build-configuration-name="starling">
               <dependency linkage="Merged" />
             </entry>
           </entries>
@@ -50,7 +50,6 @@
     <orderEntry type="module" module-name="MedKit" exported="" />
     <orderEntry type="module" module-name="Stork-Plugin-Starling" exported="" />
     <orderEntry type="module" module-name="Stork-Framework" exported="" />
-    <orderEntry type="module" module-name="Starling" exported="" />
     <orderEntry type="module" module-name="Stork-Extension-Camera" exported="" />
     <orderEntry type="module" module-name="Stork-Extension-Tween" exported="" />
     <orderEntry type="module" module-name="Stork-Extension-Nape" exported="" />
@@ -64,6 +63,7 @@
         <SOURCES />
       </library>
     </orderEntry>
+    <orderEntry type="module" module-name="starling" exported="" />
   </component>
 </module>
 
