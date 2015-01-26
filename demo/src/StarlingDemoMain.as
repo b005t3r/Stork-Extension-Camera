@@ -60,14 +60,14 @@ public class StarlingDemoMain extends Sprite {
 
         _juggler = new JugglerNode(JUGGLER_PRIORITY);
         scene.addNode(_juggler);
-        _gameLoop.addNode(_juggler.action);
+        _gameLoop.addNode(_juggler.stepAction);
 
         _cameraSpace = new CameraSpaceNode(0, 600 - 10, 0, 600 - 10);
         scene.addNode(_cameraSpace);
 
         _camera = new CameraNode(5, 5, 30, 20, VALIDATION_PRIORITY);
         _cameraSpace.addNode(_camera);
-        _gameLoop.addNode(_camera.validationAction);
+        _gameLoop.addNode(_camera.validateAction);
 
         scene.addEventListener(SceneEvent.SCENE_STARTED, function(e:SceneEvent):void {
             stage.addEventListener(KeyboardEvent.KEY_DOWN, onKeyDown);
