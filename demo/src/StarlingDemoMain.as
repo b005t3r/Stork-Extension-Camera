@@ -134,7 +134,7 @@ public class StarlingDemoMain extends Sprite {
             case Keyboard.Q:
                 if(_rotateTween == null) {
                     _rotateTween = createRotateTween(_camera);
-                    _rotateTween.addEventListener(TweenEvent.FINISHED, function(e:TweenEvent) { _rotateTween = null; });
+                    _rotateTween.addEventListener(TweenEvent.FINISHED, function(e:TweenEvent):void { _rotateTween = null; });
                     _juggler.addNode(_rotateTween);
                 }
                 break;
@@ -142,7 +142,7 @@ public class StarlingDemoMain extends Sprite {
             case Keyboard.W:
                 if(_transitionTween == null) {
                     _transitionTween = createTransitionTween(_camera);
-                    _transitionTween.addEventListener(TweenEvent.FINISHED, function(e:TweenEvent) { _transitionTween = null; });
+                    _transitionTween.addEventListener(TweenEvent.FINISHED, function(e:TweenEvent):void { _transitionTween = null; });
                     _juggler.addNode(_transitionTween);
                 }
                 break;
@@ -150,7 +150,7 @@ public class StarlingDemoMain extends Sprite {
             case Keyboard.E:
                 if(_anchorTween == null) {
                     _anchorTween = createAnchorTween(_camera);
-                    _anchorTween.addEventListener(TweenEvent.FINISHED, function(e:TweenEvent) { _anchorTween = null; });
+                    _anchorTween.addEventListener(TweenEvent.FINISHED, function(e:TweenEvent):void { _anchorTween = null; });
                     _juggler.addNode(_anchorTween);
                 }
                 break;
@@ -158,7 +158,7 @@ public class StarlingDemoMain extends Sprite {
             case Keyboard.R:
                 if(_scaleTween == null) {
                     _scaleTween = createScaleTween(_camera);
-                    _scaleTween.addEventListener(TweenEvent.FINISHED, function(e:TweenEvent) { _scaleTween = null; });
+                    _scaleTween.addEventListener(TweenEvent.FINISHED, function(e:TweenEvent):void { _scaleTween = null; });
                     _juggler.addNode(_scaleTween);
                 }
                 break;
@@ -166,7 +166,7 @@ public class StarlingDemoMain extends Sprite {
             case Keyboard.T:
                 if(_alignmentTween == null) {
                     _alignmentTween = createAlignmentTween(_cameraProjection);
-                    _alignmentTween.addEventListener(TweenEvent.FINISHED, function(e:TweenEvent) { _alignmentTween = null; });
+                    _alignmentTween.addEventListener(TweenEvent.FINISHED, function(e:TweenEvent):void { _alignmentTween = null; });
                     _juggler.addNode(_alignmentTween);
                 }
                 break;

@@ -85,7 +85,7 @@ public class NapeDemoMain extends Sprite {
         _camera = new CameraNode(0, 0, 360, 240, VALIDATION_PRIORITY);
         _camera.anchor.y = 0.75;
         _cameraSpace.addNode(_camera);
-        _gameLoop.addNode(_camera.validationAction);
+        _gameLoop.addNode(_camera.validateAction);
 
         var shapeDebug:ShapeDebug = new ShapeDebug(2000, 2000, 0x00000000);
         _cameraProjection = new FlashProjectionNode(shapeDebug.display, new AspectFitPolicy(), stage.stageWidth, stage.stageHeight, PROJECTION_PRIORITY);
